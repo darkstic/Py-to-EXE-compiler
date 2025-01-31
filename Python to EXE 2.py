@@ -59,7 +59,7 @@ def file_dialog():
 
 def convert_to_exe(file_path):
     if file_path:
-        command = [sys.executable, '-m', 'PyInstaller', '--onefile', file_path]
+        command = [sys.executable, '-m', 'PyInstaller', '--noconsole','--onefile', file_path]
         try:
             subprocess.run(command, check=True)
             print(f"Successfully converted {file_path} to .exe")
