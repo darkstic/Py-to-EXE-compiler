@@ -57,9 +57,12 @@ def file_dialog():
         print("No file selected.")
         return None
 
-def convert_to_exe(file_path):
+def convert_to_exe(file_path, no_console):
     if file_path:
-        command = [sys.executable, '-m', 'PyInstaller', '--noconsole','--onefile', file_path]
+        command = [sys.executable, '-m', 'PyInstaller', '--onefile']
+        if no_console:
+            command.append('--noconsole')
+        command.append(file_path)
         try:
             subprocess.run(command, check=True)
             print(f"Successfully converted {file_path} to .exe")
@@ -76,10 +79,10 @@ def open_explorer_to_dist():
     else:
         print(f"Path {dist_path} does not exist.")
 
-def open_file_dialog():
+def open_file_dialog(no_console_var):
     file_path = file_dialog()
     if file_path:
-        convert_to_exe(file_path)
+        convert_to_exe(file_path, no_console_var.get())
 
 def create_gui():
     root = tk.Tk()
@@ -91,7 +94,17 @@ def create_gui():
     label = tk.Label(frame, text="Convert Python script to EXE")
     label.pack(pady=5)
 
-    button = tk.Button(frame, text="Select Python File", command=open_file_dialog)
+    no_console_var = tk.BooleanVar(value=True)
+    no_console_checkbox = tk.Checkbutton(
+        frame, text="No Console (for GUI apps)", variable=no_console_var
+    )
+    no_console_checkbox.pack(pady=5)
+
+    button = tk.Button(
+        frame,
+        text="Select Python File",
+        command=lambda: open_file_dialog(no_console_var)
+    )
     button.pack(pady=5)
 
     root.mainloop()
